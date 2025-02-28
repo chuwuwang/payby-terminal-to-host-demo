@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/widget_btn_get_device_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Get Device info"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"/>
+            <Button
+                android:id="@+id/widget_btn_place_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Place Order"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"/>
+
+            <Button
+                android:id="@+id/widget_btn_card_payment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Card Payment"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"/>
+            <Button
+                android:id="@+id/widget_btn_card_2nd_auth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Card 2nd Authentication"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"/>
+            <Button
+                android:id="@+id/widget_btn_inquiry_cashier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Inquiry Cashier"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"/>
+            <Button
+                android:id="@+id/widget_btn_close_cashier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Close Cashier"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"/>
+            <Button
+                android:id="@+id/widget_btn_revoke_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Revoke Order"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"/>
+            <Button
+                android:id="@+id/widget_btn_qr_code_payment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="QR Code Payment"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"/>
+            <Button
+                android:id="@+id/widget_btn_scan_qr_code_payment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Scan QR Code"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"/>
+            <Button
+                android:id="@+id/widget_btn_inquiry_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Inquiry Payment Order"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="24dp"/>
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

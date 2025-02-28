@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Step 1: Check the RSA keys
+        \nStep 2: Check the terminal active status
+        \nStep 3: If the terminal is not active, click the button to active the terminal, if the terminal is active, go to home page"
+        android:textSize="16sp"/>
+
+    <Button
+        android:id="@+id/button_active_terminal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Active Terminal"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:layout_marginTop="36dp"
+        android:textSize="16sp"
+        android:padding="8dp"/>
+</androidx.appcompat.widget.LinearLayoutCompat>
