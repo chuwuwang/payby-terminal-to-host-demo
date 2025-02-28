@@ -13,6 +13,7 @@ import com.payby.terminal.demo.R;
 import com.payby.terminal.demo.http.Result;
 import com.payby.terminal.demo.http.entity.Money;
 import com.payby.terminal.demo.http.entity.PaymentOrder;
+import com.payby.terminal.demo.http.entity.TokenAndPaymentOrderId;
 import com.payby.terminal.demo.http.entity.trade.PaymentInteraction;
 import com.payby.terminal.demo.http.request.CardAuthorizationReq;
 import com.payby.terminal.demo.http.request.CardPaymentReq;
@@ -32,6 +33,8 @@ import com.payby.terminal.demo.utils.ThreadPoolManager;
 import com.payby.terminal.demo.view.LoadingUtils;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class CommonResponseActivity extends AppCompatActivity {
@@ -128,6 +131,27 @@ public class CommonResponseActivity extends AppCompatActivity {
         LoadingUtils.showLoading(this, "Card Payment...");
         ThreadPoolManager.executeCacheTask(() -> {
             CardPaymentReq req = new CardPaymentReq();
+            req.setToken(TokenCache.getToken());
+            req.setCardMaskNo("549211 * *****3233");
+            req.setPaymentRequestNo(UUID.randomUUID().toString());
+            req.setDeviceLatitude("24.495811019518776"); //get from GPS or network
+            req.setDeviceLongitude("54.40854299999998");
+
+            Map<String, Object> channelParams = new HashMap<>();
+            channelParams.put("readType", "CONTACTLESS");
+            channelParams.put("passwordMode", "NO_PASSWORD");
+            channelParams.put("isSignature", false);
+            channelParams.put("mcSingleTapPin", false);
+            channelParams.put("isFallbackTransaction", false);
+            channelParams.put("isMagneticTransaction", false);
+            channelParams.put("aid", "A0000000031010");
+            channelParams.put("auth2", "false");
+            //read from card
+            channelParams.put("iccData", "500A4D41535445524341524482021B808407A0000000041010950500000080019A032502289C01005F2A0207845F3401009F02060000000001009F03060000000000009F080200029F090200029F0D05B4508400009F0E0500000000009F0F05B4708480009F10120114A14003020000000400000000000000FF9F1A0207849F1E0830303030303930359F26086E18E3BE05D3BFA09F2701809F3303E008E89F34033F00029F3501229F360200769F3704A71BDFD39F6E0707840000323100");
+            channelParams.put("dssKSN","10033A10C58049C000AE");
+            channelParams.put("encryptedDssData","xQwH6IUmcp7IB2Cg5yZRrBCags9wwzNCXPleo9NszVgv7KPsTO5gb5QWcDXOFwtBFECOwG9gyNbGPDMJbWiDV8VVHFo/VfGJJB1hfTU4OC7buE//k70hlXI6487OoGWGRmyr06AtkIOtMf04aSNQf1wmnVBJ55n/x0nu9gpZUQ5M5KQQ93Q44g==");
+            req.setChannelParams(channelParams);
+
             Result<PaymentOrder> result = TradeRepository.cardPayment(req);
             LoadingUtils.dismissLoading();
             if (result.isSuccess()) {
@@ -153,6 +177,11 @@ public class CommonResponseActivity extends AppCompatActivity {
        LoadingUtils.showLoading(this, "Card 2nd Auth...");
         ThreadPoolManager.executeCacheTask(() -> {
             CardAuthorizationReq req = new CardAuthorizationReq();
+            TokenAndPaymentOrderId tokenAndPaymentOrderId = new TokenAndPaymentOrderId();
+            tokenAndPaymentOrderId.setToken(TokenCache.getToken());
+            tokenAndPaymentOrderId.setPaymentOrderId("311740727239127896");
+            req.setAuth2Result("SUCCESS"); //SUCCESS or FAILURE
+            req.setTokenAndPaymentOrderId(tokenAndPaymentOrderId);
            Result<PaymentOrder> result = TradeRepository.card2ndAuth(req);
             LoadingUtils.dismissLoading();
             if (result.isSuccess()) {
@@ -175,6 +204,7 @@ public class CommonResponseActivity extends AppCompatActivity {
        LoadingUtils.showLoading(this, "Inquiry Cashier...");
         ThreadPoolManager.executeCacheTask(() -> {
             InquiryCashierReq req = new InquiryCashierReq();
+            req.setToken(TokenCache.getToken()); //from original placeOrder response
             Result<CashierOrder> result = TradeRepository.inquiryCashier(req);
             LoadingUtils.dismissLoading();
             if (result.isSuccess()) {
@@ -221,6 +251,7 @@ public class CommonResponseActivity extends AppCompatActivity {
         LoadingUtils.showLoading(this, "Revoke Order...");
         ThreadPoolManager.executeCacheTask(() -> {
             CloseCashierReq req = new CloseCashierReq();
+            req.setToken(TokenCache.getToken()); //from original placeOrder response
             Result<RevokeOrderResponse> result = TradeRepository.revokeOrder(req);
             LoadingUtils.dismissLoading();
             if (result.isSuccess()) {
@@ -242,11 +273,13 @@ public class CommonResponseActivity extends AppCompatActivity {
     private void showMerchantQRCode() {
         LoadingUtils.showLoading(this, "Show Merchant QR Code...");
         ThreadPoolManager.executeCacheTask(()->{
+            token = TokenCache.getToken(); //from original placeOrder response
             Result<String> result = TradeRepository.showMerchantQRCode(token);
             LoadingUtils.dismissLoading();
             if (result.isSuccess()) {
                 runOnUiThread(() -> {
                     mTextResult.setText(result.getData());
+                    //create QR code image with result.getData()
                 });
             } else {
                 String error = result.getError().getMessage();
@@ -260,6 +293,11 @@ public class CommonResponseActivity extends AppCompatActivity {
         LoadingUtils.showLoading(this, "Scan Customer QR Code...");
         ThreadPoolManager.executeCacheTask(()->{
             ScanCustomerQRCodeReq req = new ScanCustomerQRCodeReq();
+            req.setToken(TokenCache.getToken()); //from original placeOrder response
+            req.setQrCode("https://qr.alipay.com/bax00007qzqzqzqzqzqzqz"); //scan from customer
+            req.setDeviceLatitude("24.495811019518776"); //get from GPS or network
+            req.setDeviceLongitude("54.40854299999998"); //get from GPS or network
+
             Result<PaymentInteraction> result = TradeRepository.scanCustomerQRCode(req);
             LoadingUtils.dismissLoading();
             if (result.isSuccess()) {
@@ -278,6 +316,8 @@ public class CommonResponseActivity extends AppCompatActivity {
         LoadingUtils.showLoading(this, "Inquiry Payment Order...");
         ThreadPoolManager.executeCacheTask(()->{
             InquiryPaymentOrderReq req = new InquiryPaymentOrderReq();
+            req.setPaymentOrderId(UUID.randomUUID().toString()); //from original payment order
+            req.setToken(TokenCache.getToken()); //from original payment order
             Result<PaymentOrder> result = TradeRepository.inquiryPaymentOrder(req);
             LoadingUtils.dismissLoading();
             if (result.isSuccess()) {
