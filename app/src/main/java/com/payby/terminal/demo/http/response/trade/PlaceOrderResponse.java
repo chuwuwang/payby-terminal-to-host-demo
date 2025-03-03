@@ -4,12 +4,12 @@ import com.payby.terminal.demo.http.entity.trade.AcquireOrder;
 
 public class PlaceOrderResponse {
     private String token;
-    private AcquireOrder acquireOrder;
+    private AcquireOrder order;
     private String cashierDeskUrl;
 
     public PlaceOrderResponse() {
         this.token = "";
-        this.acquireOrder = new AcquireOrder();
+        this.order = new AcquireOrder();
         this.cashierDeskUrl = "";
     }
 
@@ -17,7 +17,7 @@ public class PlaceOrderResponse {
         this.token = token;
     }
     public void setAcquireOrder(AcquireOrder acquireOrder) {
-        this.acquireOrder = acquireOrder;
+        this.order = acquireOrder;
     }
     public void setCashierDeskUrl(String cashierDeskUrl) {
         this.cashierDeskUrl = cashierDeskUrl;
@@ -27,7 +27,7 @@ public class PlaceOrderResponse {
         return token;
     }
     public AcquireOrder getAcquireOrder() {
-        return acquireOrder;
+        return order;
     }
     public String getCashierDeskUrl() {
         return cashierDeskUrl;
@@ -37,7 +37,7 @@ public class PlaceOrderResponse {
     public String toString() {
         return "PlaceOrderResponse{" +
                 "token='" + token + '\'' +
-                ", acquireOrder=" + acquireOrder +
+                ", acquireOrder=" + order +
                 ", cashierDeskUrl='" + cashierDeskUrl + '\'' +
                 '}';
     }

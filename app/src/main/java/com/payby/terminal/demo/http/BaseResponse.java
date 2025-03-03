@@ -4,9 +4,9 @@ public class BaseResponse<T> {
     private T body;
     private ResponseHeader header;
 
-    public BaseResponse(ResponseHeader header, T data) {
-        this.header = header;
-        this.body = data;
+    public BaseResponse() {
+        this.header = null;
+        this.body = null;
     }
 
     public ResponseHeader getHeader() {
@@ -21,5 +21,13 @@ public class BaseResponse<T> {
     }
     public void setBody(T data) {
         this.body = data;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseResponse{" +
+                "body=" + body +
+                ", header=" + header +
+                '}';
     }
 }

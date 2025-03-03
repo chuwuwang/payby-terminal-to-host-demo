@@ -3,6 +3,7 @@ package com.payby.terminal.demo.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ import com.payby.terminal.demo.http.Result;
 import com.payby.terminal.demo.http.entity.Money;
 import com.payby.terminal.demo.http.entity.PaymentOrder;
 import com.payby.terminal.demo.http.entity.TokenAndPaymentOrderId;
+import com.payby.terminal.demo.http.entity.trade.OrderIndex;
 import com.payby.terminal.demo.http.entity.trade.PaymentInteraction;
 import com.payby.terminal.demo.http.request.CardAuthorizationReq;
 import com.payby.terminal.demo.http.request.CardPaymentReq;
@@ -21,6 +23,7 @@ import com.payby.terminal.demo.http.request.CloseCashierReq;
 import com.payby.terminal.demo.http.request.InquiryCashierReq;
 import com.payby.terminal.demo.http.request.InquiryPaymentOrderReq;
 import com.payby.terminal.demo.http.request.PlaceOrderReq;
+import com.payby.terminal.demo.http.request.RevokeOrderReq;
 import com.payby.terminal.demo.http.request.ScanCustomerQRCodeReq;
 import com.payby.terminal.demo.http.response.device.ConfigInfo;
 import com.payby.terminal.demo.http.response.trade.CashierOrder;
@@ -101,12 +104,14 @@ public class CommonResponseActivity extends AppCompatActivity {
     private void placeOrder() {
         LoadingUtils.showLoading(this, "Place Order...");
         ThreadPoolManager.executeCacheTask(() -> {
+            String merchantOrderNo = UUID.randomUUID().toString();
+            TokenCache.saveMerchantOrderNo(merchantOrderNo);
             PlaceOrderReq req = new PlaceOrderReq();
             Money totalAmount = new Money();
             totalAmount.setAmount(BigDecimal.valueOf(10.0));
             totalAmount.setCurrency("AED");
             req.setTotalAmount(totalAmount);
-            req.setMerchantOrderNo(UUID.randomUUID().toString());
+            req.setMerchantOrderNo(merchantOrderNo);
             req.setSubject("Purchase AED "+req.getTotalAmount().getAmount()+" at Test StoreName");
             Result<PlaceOrderResponse> result= TradeRepository.placeOrder(req);
             LoadingUtils.dismissLoading();
@@ -115,6 +120,7 @@ public class CommonResponseActivity extends AppCompatActivity {
                     if (result.getData()!= null) {
                         token = result.getData().getToken();
                         TokenCache.saveToken(token);
+                        TokenCache.saveOrderNo(result.getData().getAcquireOrder().getOrderNo());
                     }
                     mTextResult.setText(GsonUtils.getGson4LogUtils().toJson(result.getData()));
                 });
@@ -130,26 +136,42 @@ public class CommonResponseActivity extends AppCompatActivity {
     private void cardPayment() {
         LoadingUtils.showLoading(this, "Card Payment...");
         ThreadPoolManager.executeCacheTask(() -> {
+            String paymentRequestNo = UUID.randomUUID().toString();
+            TokenCache.savePaymentRequestNo(paymentRequestNo);
             CardPaymentReq req = new CardPaymentReq();
             req.setToken(TokenCache.getToken());
-            req.setCardMaskNo("549211 * *****3233");
-            req.setPaymentRequestNo(UUID.randomUUID().toString());
+            req.setCardMaskNo("411939******7915");
+            req.setPaymentRequestNo(paymentRequestNo);
             req.setDeviceLatitude("24.495811019518776"); //get from GPS or network
             req.setDeviceLongitude("54.40854299999998");
-
             Map<String, Object> channelParams = new HashMap<>();
-            channelParams.put("readType", "CONTACTLESS");
-            channelParams.put("passwordMode", "NO_PASSWORD");
             channelParams.put("isSignature", false);
             channelParams.put("mcSingleTapPin", false);
             channelParams.put("isFallbackTransaction", false);
             channelParams.put("isMagneticTransaction", false);
+            // CONTACTLESS
+//            channelParams.put("readType", "CONTACTLESS");
+//            channelParams.put("passwordMode", "NO_PASSWORD");
+//            channelParams.put("aid", "A0000000031010");
+//            channelParams.put("auth2", "false");
+//            //read from card
+//            channelParams.put("iccData", "4F07A0000000031010500B5669736120437265646974820200208407A0000000031010950500000000009A032502289C01005F2A0207845F3401019F02060000000010009F03060000000000009F0607A00000000310109F090200309F100706011203A000009F120B56697361204372656469749F1A0207849F1E0837303030303030349F26081396243A4986E2569F2701809F3303E0F8C89F3501229F360200219F37042544B11E9F660436B0C0809F6C0206009F6E0440700700");
+//            channelParams.put("dssKSN","10033A10C58049C000B1");
+//            channelParams.put("encryptedDssData","mCP+FwTqBBKYllfqfdsjcUN7gM9+S0opcOxxqt94GcSKS+dPVSCT8f61e0ANhMy6XYXVp3ELL6QQGE21PhhG23YhhkV6kO9muxvFVb/e8xvF++400GUnpAuTLM/UKL757DuRQxtn3gvrq/ceTKNLDwGcux05p9RjPu6OqIG+CTg=");
+
+
+            //CONTACT
+            channelParams.put("readType", "CONTACT");
+            channelParams.put("passwordMode", "ONLINE_PASSWORD");
             channelParams.put("aid", "A0000000031010");
-            channelParams.put("auth2", "false");
+            channelParams.put("auth2", "true");
             //read from card
-            channelParams.put("iccData", "500A4D41535445524341524482021B808407A0000000041010950500000080019A032502289C01005F2A0207845F3401009F02060000000001009F03060000000000009F080200029F090200029F0D05B4508400009F0E0500000000009F0F05B4708480009F10120114A14003020000000400000000000000FF9F1A0207849F1E0830303030303930359F26086E18E3BE05D3BFA09F2701809F3303E008E89F34033F00029F3501229F360200769F3704A71BDFD39F6E0707840000323100");
-            channelParams.put("dssKSN","10033A10C58049C000AE");
-            channelParams.put("encryptedDssData","xQwH6IUmcp7IB2Cg5yZRrBCags9wwzNCXPleo9NszVgv7KPsTO5gb5QWcDXOFwtBFECOwG9gyNbGPDMJbWiDV8VVHFo/VfGJJB1hfTU4OC7buE//k70hlXI6487OoGWGRmyr06AtkIOtMf04aSNQf1wmnVBJ55n/x0nu9gpZUQ5M5KQQ93Q44g==");
+            channelParams.put("iccData", "4F07A0000000031010500B5669736120437265646974820239008407A0000000031010950500000480009A032502289C01005F2A0207845F3401019F02060000000001209F03060000000000009F0607A00000000310109F090200309F100706011203A0B8029F120B56697361204372656469749F1A0207849F1E0837303030303030349F260889751D48AC978D749F2701809F3303E0F8C89F3501229F360200229F37045B56B2089F660436F0C080");
+            channelParams.put("dssKSN","10033A10C58049C000B2");
+            channelParams.put("encryptedDssData","PyJ1KLO5fTjJt2gn55xD698fT8N9HqUWE6vNa5t/ZdRFqVyd3ZS4B3PQM2SkpDK3PkOxfGQIZoHemWLPRAGx6G47Go22+XBehaO4VK/P/SOveY9f2lvVe+A29jgok9ScjC6U5YfYcTGppJfjkCtpUI88urx6AUTzKDFGOavi5XM=");
+            channelParams.put("pinKSN","10033A10C58049C000B2");
+            channelParams.put("encryptedPin","0DE9E3F129A498D2");
+
             req.setChannelParams(channelParams);
 
             Result<PaymentOrder> result = TradeRepository.cardPayment(req);
@@ -160,6 +182,7 @@ public class CommonResponseActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         mTextResult.setText(GsonUtils.getGson4LogUtils().toJson(paymentOrder));
                     });
+                    TokenCache.saveOrderId(paymentOrder.getId());
                 } else  {
                     runOnUiThread(() -> {
                         mTextResult.setText("Card payment success");
@@ -179,8 +202,8 @@ public class CommonResponseActivity extends AppCompatActivity {
             CardAuthorizationReq req = new CardAuthorizationReq();
             TokenAndPaymentOrderId tokenAndPaymentOrderId = new TokenAndPaymentOrderId();
             tokenAndPaymentOrderId.setToken(TokenCache.getToken());
-            tokenAndPaymentOrderId.setPaymentOrderId("311740727239127896");
-            req.setAuth2Result("SUCCESS"); //SUCCESS or FAILURE
+            tokenAndPaymentOrderId.setPaymentOrderId(TokenCache.getOrderId()); //from cadPayment response
+            req.setAuth2Result("FAILURE"); //SUCCESS or FAILURE
             req.setTokenAndPaymentOrderId(tokenAndPaymentOrderId);
            Result<PaymentOrder> result = TradeRepository.card2ndAuth(req);
             LoadingUtils.dismissLoading();
@@ -229,15 +252,12 @@ public class CommonResponseActivity extends AppCompatActivity {
         ThreadPoolManager.executeCacheTask(() -> {
             CloseCashierReq req = new CloseCashierReq();
             req.setToken(token); // token from placeOrder response
-            Result<String> result = TradeRepository.closeCashier(req);
+            Result<Object> result = TradeRepository.closeCashier(req);
             LoadingUtils.dismissLoading();
             if (result.isSuccess()) {
                 runOnUiThread(() -> {
-                    if (result.getData() == null) {
-                        mTextResult.setText("Close cashier success");
-                    } else  {
-                        mTextResult.setText(result.getData().toString());
-                    }
+                   //close cashier response is empty, still show success
+                    mTextResult.setText("Close cashier success");
                 });
             } else  {
                 String error = result.getError().getMessage();
@@ -250,8 +270,10 @@ public class CommonResponseActivity extends AppCompatActivity {
     private void revokeOrder() {
         LoadingUtils.showLoading(this, "Revoke Order...");
         ThreadPoolManager.executeCacheTask(() -> {
-            CloseCashierReq req = new CloseCashierReq();
-            req.setToken(TokenCache.getToken()); //from original placeOrder response
+            RevokeOrderReq req = new RevokeOrderReq();
+            OrderIndex orderIndex = new OrderIndex();
+            orderIndex.setOrderNo(TokenCache.getOrderNo()); //from original placeOrder response
+            req.setAcquireOrderId(orderIndex);        //from original placeOrder response
             Result<RevokeOrderResponse> result = TradeRepository.revokeOrder(req);
             LoadingUtils.dismissLoading();
             if (result.isSuccess()) {
@@ -316,7 +338,7 @@ public class CommonResponseActivity extends AppCompatActivity {
         LoadingUtils.showLoading(this, "Inquiry Payment Order...");
         ThreadPoolManager.executeCacheTask(()->{
             InquiryPaymentOrderReq req = new InquiryPaymentOrderReq();
-            req.setPaymentOrderId(UUID.randomUUID().toString()); //from original payment order
+            req.setPaymentRequestNo(TokenCache.getPaymentRequestNo()); //from original payment order
             req.setToken(TokenCache.getToken()); //from original payment order
             Result<PaymentOrder> result = TradeRepository.inquiryPaymentOrder(req);
             LoadingUtils.dismissLoading();

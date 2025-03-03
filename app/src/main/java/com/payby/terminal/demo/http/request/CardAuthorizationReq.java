@@ -4,11 +4,11 @@ import com.payby.terminal.demo.http.entity.TokenAndPaymentOrderId;
 
 public class CardAuthorizationReq {
     private String auth2Result;
-    private TokenAndPaymentOrderId tokenAndPaymentOrderId;
+    private TokenAndPaymentOrderId index;
 
     public CardAuthorizationReq() {
         this.auth2Result = "";
-        this.tokenAndPaymentOrderId = null;
+        this.index = new TokenAndPaymentOrderId();
     }
 
     public void setAuth2Result(String auth2Result) {
@@ -16,7 +16,7 @@ public class CardAuthorizationReq {
     }
 
     public void setTokenAndPaymentOrderId(TokenAndPaymentOrderId tokenAndPaymentOrderId) {
-        this.tokenAndPaymentOrderId = tokenAndPaymentOrderId;
+        this.index = tokenAndPaymentOrderId;
     }
 
     public String getAuth2Result() {
@@ -24,14 +24,14 @@ public class CardAuthorizationReq {
     }
 
     public TokenAndPaymentOrderId getTokenAndPaymentOrderId() {
-        return tokenAndPaymentOrderId;
+        return index;
     }
 
     @Override
     public String toString() {
         return "CardAuthorizationReq{" +
                 "auth2Result='" + auth2Result + '\'' +
-                ", tokenAndPaymentOrderId=" + tokenAndPaymentOrderId +
+                ", index=" + index +
                 '}';
     }
 }

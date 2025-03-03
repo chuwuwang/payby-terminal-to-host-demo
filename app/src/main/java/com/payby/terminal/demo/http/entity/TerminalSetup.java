@@ -1,33 +1,33 @@
 package com.payby.terminal.demo.http.entity;
 
 public class TerminalSetup {
-    private String key;
-    private String value;
+    private String pkey;
+    private String pvalue;
 
     public TerminalSetup() {
-        this.key = "";
-        this.value = "";
+        this.pkey = "";
+        this.pvalue = "";
     }
 
     public void setKey(String key) {
-        this.key = key;
+        this.pkey = key;
     }
     public void setValue(String value) {
-        this.value = value;
+        this.pvalue = value;
     }
 
     public String getKey() {
-        return key;
+        return pkey;
     }
     public String getValue() {
-        return value;
+        return pvalue;
     }
 
     @Override
     public String toString() {
         return "TerminalSetup{" +
-                "key='" + key + '\'' +
-                ", value='" + value + '\'' +
+                "key='" + pkey + '\'' +
+                ", value='" + pvalue + '\'' +
                 '}';
     }
 }

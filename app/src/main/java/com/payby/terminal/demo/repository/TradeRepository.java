@@ -13,6 +13,7 @@ import com.payby.terminal.demo.http.request.CloseCashierReq;
 import com.payby.terminal.demo.http.request.InquiryCashierReq;
 import com.payby.terminal.demo.http.request.InquiryPaymentOrderReq;
 import com.payby.terminal.demo.http.request.PlaceOrderReq;
+import com.payby.terminal.demo.http.request.RevokeOrderReq;
 import com.payby.terminal.demo.http.request.ScanCustomerQRCodeReq;
 import com.payby.terminal.demo.http.response.device.ConfigInfo;
 import com.payby.terminal.demo.http.response.trade.CashierOrder;
@@ -61,12 +62,12 @@ public class TradeRepository extends BaseRepository {
         return safeCall(type, () ->gatewayService(req, "/cashier/get"));
     }
 
-    public static Result<String> closeCashier(CloseCashierReq req) {
-        Type type = new TypeToken<BaseResponse<String>>() {}.getType();
+    public static Result<Object> closeCashier(CloseCashierReq req) {
+        Type type = new TypeToken<BaseResponse<Object>>() {}.getType();
         return safeCall(type, () ->gatewayService(req, "/cashier/close"));
     }
 
-    public static Result<RevokeOrderResponse> revokeOrder(CloseCashierReq req) {
+    public static Result<RevokeOrderResponse> revokeOrder(RevokeOrderReq req) {
         Type type = new TypeToken<BaseResponse<RevokeOrderResponse>>() {}.getType();
         return safeCall(type, () ->gatewayService(req, "/acquire/revoke/place"));
     }

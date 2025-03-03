@@ -78,7 +78,7 @@ abstract public class BaseRepository {
             }
 
             if (!"SUCCESS".equals(obj.getHeader().getResponseCode())) {
-                Log.e(TAG, "Response <--- header: " + obj.getHeader());
+                Log.e(TAG, "11Response <--- header: " + obj.getHeader());
                 String traceCode = obj.getHeader().getTraceCode() != null ? obj.getHeader().getTraceCode() : "";
                 String code = obj.getHeader().getResponseCode() != null ? obj.getHeader().getResponseCode() : "-103";
                 String message = obj.getHeader().getErrorMessage() != null ? obj.getHeader().getErrorMessage() : "Server unknown error, please try again";
@@ -92,8 +92,6 @@ abstract public class BaseRepository {
                 }
             }
             T data = obj.getBody();
-            Log.e(TAG, "Response <--- header: " + obj.getHeader() + " body: " + data);
-
             try {
                 if (data != null) {
                     return Result.onSuccess(data);
