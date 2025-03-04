@@ -203,7 +203,7 @@ public class CommonResponseActivity extends AppCompatActivity {
             TokenAndPaymentOrderId tokenAndPaymentOrderId = new TokenAndPaymentOrderId();
             tokenAndPaymentOrderId.setToken(TokenCache.getToken());
             tokenAndPaymentOrderId.setPaymentOrderId(TokenCache.getOrderId()); //from cadPayment response
-            req.setAuth2Result("FAILURE"); //SUCCESS or FAILURE
+            req.setAuth2Result("SUCCESS"); //SUCCESS or FAILURE
             req.setTokenAndPaymentOrderId(tokenAndPaymentOrderId);
            Result<PaymentOrder> result = TradeRepository.card2ndAuth(req);
             LoadingUtils.dismissLoading();
