@@ -30,7 +30,6 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.widget_btn_card_2nd_auth).setOnClickListener(this);
         findViewById(R.id.widget_btn_inquiry_cashier).setOnClickListener(this);
         findViewById(R.id.widget_btn_close_cashier).setOnClickListener(this);
-        findViewById(R.id.widget_btn_revoke_order).setOnClickListener(this);
         findViewById(R.id.widget_btn_qr_code_payment).setOnClickListener(this);
         findViewById(R.id.widget_btn_scan_qr_code_payment).setOnClickListener(this);
         findViewById(R.id.widget_btn_inquiry_order).setOnClickListener(this);
@@ -51,8 +50,6 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
            doTransaction(4);
        } else if (view.getId() == R.id.widget_btn_close_cashier) {
             doTransaction(5);
-       } else if (view.getId() == R.id.widget_btn_revoke_order) {
-            doTransaction(6);
        } else if (view.getId() == R.id.widget_btn_qr_code_payment) {
             doTransaction(7);
        } else if (view.getId() == R.id.widget_btn_scan_qr_code_payment) {

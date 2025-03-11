@@ -60,14 +60,6 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"/>
             <Button
-                android:id="@+id/widget_btn_revoke_order"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Revoke Order"
-                android:layout_marginTop="24dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"/>
-            <Button
                 android:id="@+id/widget_btn_qr_code_payment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

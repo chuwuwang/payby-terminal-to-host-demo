@@ -71,8 +71,6 @@ public class CommonResponseActivity extends AppCompatActivity {
             inquiryCashier();
         } else if (nType == 5) {
             closeCashier();
-        } else if (nType == 6) {
-            revokeOrder();
         } else if (nType == 7) {
            showMerchantQRCode();
         } else if (nType == 8) {
@@ -263,31 +261,6 @@ public class CommonResponseActivity extends AppCompatActivity {
                 String error = result.getError().getMessage();
                 runOnUiThread(() -> {
                     mTextResult.setText("Close cashier failed: " + error);
-                });
-            }
-        });
-    }
-    private void revokeOrder() {
-        LoadingUtils.showLoading(this, "Revoke Order...");
-        ThreadPoolManager.executeCacheTask(() -> {
-            RevokeOrderReq req = new RevokeOrderReq();
-            OrderIndex orderIndex = new OrderIndex();
-            orderIndex.setOrderNo(TokenCache.getOrderNo()); //from original placeOrder response
-            req.setAcquireOrderId(orderIndex);        //from original placeOrder response
-            Result<RevokeOrderResponse> result = TradeRepository.revokeOrder(req);
-            LoadingUtils.dismissLoading();
-            if (result.isSuccess()) {
-                runOnUiThread(() -> {
-                    if (result.getData() == null) {
-                        mTextResult.setText("Revoke order success");
-                    } else  {
-                        mTextResult.setText(GsonUtils.getGson4LogUtils().toJson(result.getData()));
-                    }
-                });
-            } else  {
-                String error = result.getError().getMessage();
-                runOnUiThread(() -> {
-                    mTextResult.setText("Revoke order failed: " + error);
                 });
             }
         });
